@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Control Domótico — ECO MAX</title>
+  <style>
+:root {
+      --verde-principal: #2E7D52;
+      --amarillo-acento: #FBBF05;
+      --blanco: #FFFFFF;
+      --verde-oscuro: #1F5B3E;
+      --gris-transparente: rgba(0, 0, 0, 0.2);
+      --rojo: #ff4c4c;
+      --verde: #00cc66;
+    }
+    body {
+      background-color: var(--verde-principal);
+      color: var(--blanco);
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      background: var(--gris-transparente);
+      border: 2px solid var(--blanco);
+    }
+    .logo {
+      width: 140px;
+      margin-bottom: 10px;
+    }
+
+     h1, h2 {
+      margin: 10px 0;
+    }
+
+    .data p {
+      font-size: 1.2rem;
+      margin: 8px 0;
+    }
+    button {
+      background-color: var(--amarillo-acento);
+      border: 2px solid var(--verde-oscuro);
+      color: var(--verde-oscuro);
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+       background-color: var(--blanco);
+      color: var(--verde-principal);
+    }
+    .led {
+       flex-shrink: 0;
+       width: 20px;
+       height: 20px;
+       border-radius: 50%;
+       margin-right: 8px;
+       border: 2px solid #fff;
+       display: inline-block;
+    }
+    .on { background-color: var(--verde); }
+    .off { background-color: var(--rojo); }
+    .control {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    input[type="time"], input[type="number"] {
+      margin: 0 3px;
+      padding: 4px;
+    }
+    #reloj {
+      font-size: 1rem;
+      margin: 15px 0;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      color: #eefae5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="logo.png" alt="ECO MAX" class="logo" />
+    <h1>Control Domótico</h1>
+
+    <div id="reloj">Fecha y Hora: <span id="fechaHora">--/--/---- --:--:--</span> | <span id="laborable">---</span></div>
+
+    <div class="data">
+      <p>🌡️ Temperatura: <span id="temp">--</span> °C</p>
+      <p>⚠️ CO: <span id="co">--</span> % — Umbral alarma:
+        <input type="number" id="coUmbral" value="22" style="width:60px;">%</p>
+    </div>
+
+    <h2>Luces</h2>
+    <div class="control">
+      <span class="led off" id="ledLivingLed"></span>
+      <button onclick="toggle('ledLiving')" id="ledLivingBtn" data-estado="off">Living OFF</button>
+      <label>Desde <input type="time" id="ledLivingDesde" value="06:00"></label>
+      <label>Hasta <input type="time" id="ledLivingHasta" value="23:00"></label>
+    </div>
+    <div class="control">
+      <span class="led off" id="ledComedorLed"></span>
+      <button onclick="toggle('ledComedor')" id="ledComedorBtn" data-estado="off">Comedor OFF</button>
+      <label>Desde <input type="time" id="ledComedorDesde" value="06:00"></label>
+      <label>Hasta <input type="time" id="ledComedorHasta" value="23:00"></label>
+    </div>
+    <div class="control">
+      <span class="led off" id="ledCocinaLed"></span>
+      <button onclick="toggle('ledCocina')" id="ledCocinaBtn" data-estado="off">Cocina OFF</button>
+      <label>Desde <input type="time" id="ledCocinaDesde" value="06:00"></label>
+      <label>Hasta <input type="time" id="ledCocinaHasta" value="23:00"></label>
+    </div>
+    <div class="control">
+      <span class="led off" id="ledBanioLed"></span>
+      <button onclick="toggle('ledBanio')" id="ledBanioBtn" data-estado="off">Baño OFF</button>
+      <label>Desde <input type="time" id="ledBanioDesde" value="06:00"></label>
+      <label>Hasta <input type="time" id="ledBanioHasta" value="23:00"></label>
+    </div>
+    <div class="control">
+      <span class="led off" id="ledHab1Led"></span>
+      <button onclick="toggle('ledHab1')" id="ledHab1Btn" data-estado="off">Hab 1 OFF</button>
+      <label>Desde <input type="time" id="ledHab1Desde" value="06:00"></label>
+      <label>Hasta <input type="time" id="ledHab1Hasta" value="23:00"></label>
+    </div>
+    <div class="control">
+      <span class="led off" id="ledHab2Led"></span>
+      <button onclick="toggle('ledHab2')" id="ledHab2Btn" data-estado="off">Hab 2 OFF</button>
+      <label>Desde <input type="time" id="ledHab2Desde" value="06:00"></label>
+      <label>Hasta <input type="time" id="ledHab2Hasta" value="23:00"></label>
+    </div>
+
+    <h2>Clima</h2>
+    <div class="control">
+      <span class="led off" id="coolerLed"></span>
+      <button onclick="toggle('cooler')" id="coolerBtn" data-estado="off">Cooler OFF</button>
+      <label>Desde <input type="time" id="coolerDesde" value="08:00"></label>
+      <label>Hasta <input type="time" id="coolerHasta" value="20:00"></label>
+      <label>Temp de calefaccion <input type="number" id="coolerTempMin" value="20" style="width:60px;">°C</label>
+      <label>Temp de encendido <input type="number" id="coolerTempMax" value="30" style="width:60px;">°C</label>
+    </div>
+  </div>
+
+  <script>
+    function toggle(zona) {
+      const btn = document.getElementById(zona + "Btn");
+      const led = document.getElementById(zona + "Led");
+      const estadoActual = btn.getAttribute("data-estado");
+      const ahora = new Date();
+      const horaActual = ahora.toTimeString().substring(0,5);
+      const desde = document.getElementById(zona + "Desde")?.value;
+      const hasta = document.getElementById(zona + "Hasta")?.value;
+      if (desde && hasta && (horaActual < desde || horaActual > hasta)) {
+        alert(`Dispositivo fuera de la franja horaria permitida (${desde} - ${hasta})`);
+        return;
+      }
+      if (zona === "cooler") {
+        const temp = parseFloat(document.getElementById('temp').textContent);
+        const tMin = parseFloat(document.getElementById('coolerTempMin').value);
+        const tMax = parseFloat(document.getElementById('coolerTempMax').value);
+        if (temp < tMin || temp > tMax) {
+          alert(`Temperatura fuera del rango permitido (${tMin}°C - ${tMax}°C)`);
+          return;
+        }
+      }
+      const nuevoEstado = (estadoActual === "off") ? "on" : "off";
+      btn.textContent = zona.replace("led", "").replace("cooler", "Cooler") + " " + nuevoEstado.toUpperCase();
+      btn.setAttribute("data-estado", nuevoEstado);
+      led.className = "led " + nuevoEstado;
+      fetch(`/${zona}/${nuevoEstado}`).catch(() => {});
+    }
+
+    setInterval(() => {
+      fetch('/data')
+        .then(r => r.json())
+        .then(data => {
+          document.getElementById('temp').textContent = data.temp;
+          document.getElementById('co').textContent = data.co;
+          const umbral = parseFloat(document.getElementById('coUmbral').value);
+          document.getElementById('co').style.color = (data.co >= umbral) ? 'red' : '#eefae5';
+        });
+      const now = new Date();
+      const dia = now.getDay();
+      const laborable = (dia >= 1 && dia <= 5) ? 'Día laborable' : 'Día no laborable';
+      document.getElementById('laborable').textContent = laborable;
+      const fecha = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
+      const hora = now.toTimeString().substring(0,5);
+      document.getElementById('fechaHora').textContent = `${fecha} ${hora}`;
+    }, 1000);
+  </script>
+</body>
+</html>
