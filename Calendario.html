@@ -37,10 +37,6 @@
     h1, h2 {
       margin: 10px 0;
     }
-    .data p {
-      font-size: 1.2rem;
-      margin: 8px 0;
-    }
     button {
       background-color: var(--amarillo-acento);
       border: 2px solid var(--verde-oscuro);
@@ -54,28 +50,6 @@
     button:hover {
       background-color: var(--blanco);
       color: var(--verde-principal);
-    }
-    .led {
-      flex-shrink: 0;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      margin-right: 8px;
-      border: 2px solid #fff;
-      display: inline-block;
-    }
-    .on { background-color: var(--verde); }
-    .off { background-color: var(--rojo); }
-    .control {
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    input[type="time"], input[type="number"] {
-      margin: 0 3px;
-      padding: 4px;
     }
     #reloj {
       font-size: 1rem;
@@ -102,6 +76,15 @@
     .calendar-list li {
       margin: 5px 0;
     }
+    .calendar-list li.feriado {
+      color: #FBBF05;
+      font-weight: bold;
+    }
+    .leyenda {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: var(--blanco);
+    }
     @media (max-width: 600px) {
       .container {
         padding: 10px;
@@ -110,17 +93,6 @@
       button {
         width: 100%;
         font-size: 1.1rem;
-      }
-      .control {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .control label {
-        text-align: left;
-        margin-bottom: 5px;
-      }
-      .led {
-        margin: 0 auto 10px;
       }
     }
   </style>
@@ -136,6 +108,10 @@
       <input type="date" id="fechaNoLaborable">
       <button onclick="agregarFecha()">Agregar fecha</button>
       <ul class="calendar-list" id="listaFechas"></ul>
+      <div class="leyenda">
+        <p><strong>🔶 Feriado oficial</strong> (descargado automáticamente)</p>
+        <p><strong>◼ Feriado personalizado</strong> (agregado por el usuario)</p>
+      </div>
       <br>
       <a href="index.html"><button>⬅ Volver al Panel Principal</button></a>
     </div>
@@ -144,30 +120,47 @@
   <script>
     const fechaInput = document.getElementById('fechaNoLaborable');
     const listaFechas = document.getElementById('listaFechas');
-
     let diasNoLaborables = JSON.parse(localStorage.getItem('noLaborables')) || [];
+
+    function formatearFechaISOaDDMMYYYY(iso) {
+      const [a, m, d] = iso.split('-');
+      return `${d}/${m}/${a}`;
+    }
 
     function mostrarFechas() {
       listaFechas.innerHTML = '';
-      diasNoLaborables.forEach((fecha, i) => {
+      diasNoLaborables.forEach((fechaObj, i) => {
         const li = document.createElement('li');
-        li.textContent = fecha;
+        const fechaVisible = formatearFechaISOaDDMMYYYY(fechaObj.fecha);
+        li.textContent = `${fechaVisible}` + (fechaObj.tipo === 'oficial' ? ' 🔶' : ' ◼');
+        li.className = (fechaObj.tipo === 'oficial') ? 'feriado' : '';
+
         const btn = document.createElement('button');
-        btn.textContent = 'Quitar';
+        btn.textContent = fechaObj.tipo === 'oficial' ? 'Ignorar' : 'Quitar';
         btn.onclick = () => quitarFecha(i);
         li.appendChild(btn);
+
         listaFechas.appendChild(li);
       });
     }
 
     function agregarFecha() {
-      const fecha = fechaInput.value;
-      if (fecha && !diasNoLaborables.includes(fecha)) {
-        diasNoLaborables.push(fecha);
-        localStorage.setItem('noLaborables', JSON.stringify(diasNoLaborables));
-        mostrarFechas();
-      }
-    }
+  const fecha = fechaInput.value;
+  const hoy = new Date().toISOString().substring(0, 10); // formato 'YYYY-MM-DD'
+
+  if (!fecha) return;
+
+  if (fecha < hoy) {
+    alert("No se pueden agregar fechas anteriores a la actual.");
+    return;
+  }
+
+  if (!diasNoLaborables.some(f => f.fecha === fecha)) {
+    diasNoLaborables.push({ fecha, tipo: 'personal' });
+    localStorage.setItem('noLaborables', JSON.stringify(diasNoLaborables));
+    mostrarFechas();
+  }
+}
 
     function quitarFecha(index) {
       diasNoLaborables.splice(index, 1);
@@ -175,13 +168,31 @@
       mostrarFechas();
     }
 
+    async function cargarFeriadosOficiales() {
+      try {
+        const year = new Date().getFullYear();
+        const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/AR`);
+        const feriados = await res.json();
+        feriados.forEach(dia => {
+          if (!diasNoLaborables.some(f => f.fecha === dia.date)) {
+            diasNoLaborables.push({ fecha: dia.date, tipo: 'oficial' });
+          }
+        });
+        localStorage.setItem('noLaborables', JSON.stringify(diasNoLaborables));
+        mostrarFechas();
+      } catch (error) {
+        console.error('Error al cargar feriados oficiales:', error);
+      }
+    }
+
+    cargarFeriadosOficiales();
     mostrarFechas();
 
     setInterval(() => {
       const now = new Date();
       const dia = now.getDay();
       const hoyISO = now.toISOString().substring(0, 10);
-      const esNoLaborable = diasNoLaborables.includes(hoyISO);
+      const esNoLaborable = diasNoLaborables.some(f => f.fecha === hoyISO);
       const laborable = (!esNoLaborable && dia >= 1 && dia <= 5) ? 'Día laborable' : 'Día no laborable';
       document.getElementById('laborable').textContent = laborable;
 
