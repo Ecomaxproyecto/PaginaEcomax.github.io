@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Control Domótico — ECO MAX</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Control Domótico — ECO MAX</title>
+<style>
 :root {
       --verde-principal: #2E7D52;
       --amarillo-acento: #FBBF05;
@@ -114,72 +115,68 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="logo.png" alt="ECO MAX" class="logo" />
-    <h1>Control Domótico</h1>
-
-    <div id="reloj">Fecha y Hora: <span id="fechaHora">--/--/---- --:--:--</span> | <span id="laborable">---</span></div>
+<div class="container">
+<img alt="ECO MAX" class="logo" src="logo.png"/>
+<h1>Control Domótico</h1>
+<div id="reloj">Fecha y Hora: <span id="fechaHora">--/--/---- --:--:--</span> | <span id="laborable">---</span></div>
 <div style="margin-bottom: 15px;">
-  <a href="Calendario.html">
-    <button>📅 Configurar Días No Laborables</button>
-  </a>
+<a href="Calendario.html">
+<button>📅 Configurar Días No Laborables</button>
+</a>
 </div>
-    <div class="data">
-      <p>🌡️ Temperatura: <span id="temp">--</span> °C</p>
-      <p>⚠️ CO: <span id="co">--</span> % — Umbral alarma:
-        <input type="number" id="coUmbral" value="22" style="width:60px;">%</p>
-    </div>
-
-    <h2>Luces</h2>
-    <div class="control">
-      <span class="led off" id="ledLivingLed"></span>
-      <button onclick="toggle('ledLiving')" id="ledLivingBtn" data-estado="off">Living OFF</button>
-      <label>Desde <input type="time" id="ledLivingDesde" value="06:00"></label>
-      <label>Hasta <input type="time" id="ledLivingHasta" value="23:00"></label>
-    </div>
-    <div class="control">
-      <span class="led off" id="ledComedorLed"></span>
-      <button onclick="toggle('ledComedor')" id="ledComedorBtn" data-estado="off">Comedor OFF</button>
-      <label>Desde <input type="time" id="ledComedorDesde" value="06:00"></label>
-      <label>Hasta <input type="time" id="ledComedorHasta" value="23:00"></label>
-    </div>
-    <div class="control">
-      <span class="led off" id="ledCocinaLed"></span>
-      <button onclick="toggle('ledCocina')" id="ledCocinaBtn" data-estado="off">Cocina OFF</button>
-      <label>Desde <input type="time" id="ledCocinaDesde" value="06:00"></label>
-      <label>Hasta <input type="time" id="ledCocinaHasta" value="23:00"></label>
-    </div>
-    <div class="control">
-      <span class="led off" id="ledBanioLed"></span>
-      <button onclick="toggle('ledBanio')" id="ledBanioBtn" data-estado="off">Baño OFF</button>
-      <label>Desde <input type="time" id="ledBanioDesde" value="06:00"></label>
-      <label>Hasta <input type="time" id="ledBanioHasta" value="23:00"></label>
-    </div>
-    <div class="control">
-      <span class="led off" id="ledHab1Led"></span>
-      <button onclick="toggle('ledHab1')" id="ledHab1Btn" data-estado="off">Hab 1 OFF</button>
-      <label>Desde <input type="time" id="ledHab1Desde" value="06:00"></label>
-      <label>Hasta <input type="time" id="ledHab1Hasta" value="23:00"></label>
-    </div>
-    <div class="control">
-      <span class="led off" id="ledHab2Led"></span>
-      <button onclick="toggle('ledHab2')" id="ledHab2Btn" data-estado="off">Hab 2 OFF</button>
-      <label>Desde <input type="time" id="ledHab2Desde" value="06:00"></label>
-      <label>Hasta <input type="time" id="ledHab2Hasta" value="23:00"></label>
-    </div>
-
-    <h2>Clima</h2>
-    <div class="control">
-      <span class="led off" id="coolerLed"></span>
-      <button onclick="toggle('cooler')" id="coolerBtn" data-estado="off">Cooler OFF</button>
-      <label>Desde <input type="time" id="coolerDesde" value="08:00"></label>
-      <label>Hasta <input type="time" id="coolerHasta" value="20:00"></label>
-      <label>Temp de calefaccion <input type="number" id="coolerTempMin" value="20" style="width:60px;">°C</label>
-      <label>Temp de encendido <input type="number" id="coolerTempMax" value="30" style="width:60px;">°C</label>
-    </div>
-  </div>
-
-  <script>
+<div class="data">
+<p>🌡️ Temperatura: <span id="temp">--</span> °C</p>
+<p>⚠️ CO: <span id="co">--</span> % — Umbral alarma:
+        <input id="coUmbral" style="width:60px;" type="number" value="22"/>%</p>
+</div>
+<h2>Luces</h2>
+<div class="control">
+<span class="led off" id="ledLivingLed"></span>
+<button data-estado="off" id="ledLivingBtn" onclick="toggle('ledLiving')">Living OFF</button>
+<label>Desde <input id="ledLivingDesde" type="time" value="06:00"/></label>
+<label>Hasta <input id="ledLivingHasta" type="time" value="23:00"/></label>
+<label> Días: <select id="ledLivingDias"><option value="ambos">Ambos</option><option value="laborables">Laborables</option><option value="nolaborables">No laborables</option></select></label></div>
+<div class="control">
+<span class="led off" id="ledComedorLed"></span>
+<button data-estado="off" id="ledComedorBtn" onclick="toggle('ledComedor')">Comedor OFF</button>
+<label>Desde <input id="ledComedorDesde" type="time" value="06:00"/></label>
+<label>Hasta <input id="ledComedorHasta" type="time" value="23:00"/></label>
+<label> Días: <select id="ledComedorDias"><option value="ambos">Ambos</option><option value="laborables">Laborables</option><option value="nolaborables">No laborables</option></select></label></div>
+<div class="control">
+<span class="led off" id="ledCocinaLed"></span>
+<button data-estado="off" id="ledCocinaBtn" onclick="toggle('ledCocina')">Cocina OFF</button>
+<label>Desde <input id="ledCocinaDesde" type="time" value="06:00"/></label>
+<label>Hasta <input id="ledCocinaHasta" type="time" value="23:00"/></label>
+<label> Días: <select id="ledCocinaDias"><option value="ambos">Ambos</option><option value="laborables">Laborables</option><option value="nolaborables">No laborables</option></select></label></div>
+<div class="control">
+<span class="led off" id="ledBanioLed"></span>
+<button data-estado="off" id="ledBanioBtn" onclick="toggle('ledBanio')">Baño OFF</button>
+<label>Desde <input id="ledBanioDesde" type="time" value="06:00"/></label>
+<label>Hasta <input id="ledBanioHasta" type="time" value="23:00"/></label>
+<label> Días: <select id="ledBanioDias"><option value="ambos">Ambos</option><option value="laborables">Laborables</option><option value="nolaborables">No laborables</option></select></label></div>
+<div class="control">
+<span class="led off" id="ledHab1Led"></span>
+<button data-estado="off" id="ledHab1Btn" onclick="toggle('ledHab1')">Hab 1 OFF</button>
+<label>Desde <input id="ledHab1Desde" type="time" value="06:00"/></label>
+<label>Hasta <input id="ledHab1Hasta" type="time" value="23:00"/></label>
+<label> Días: <select id="ledHab1Dias"><option value="ambos">Ambos</option><option value="laborables">Laborables</option><option value="nolaborables">No laborables</option></select></label></div>
+<div class="control">
+<span class="led off" id="ledHab2Led"></span>
+<button data-estado="off" id="ledHab2Btn" onclick="toggle('ledHab2')">Hab 2 OFF</button>
+<label>Desde <input id="ledHab2Desde" type="time" value="06:00"/></label>
+<label>Hasta <input id="ledHab2Hasta" type="time" value="23:00"/></label>
+<label> Días: <select id="ledHab2Dias"><option value="ambos">Ambos</option><option value="laborables">Laborables</option><option value="nolaborables">No laborables</option></select></label></div>
+<h2>Clima</h2>
+<div class="control">
+<span class="led off" id="coolerLed"></span>
+<button data-estado="off" id="coolerBtn" onclick="toggle('cooler')">Cooler OFF</button>
+<label>Desde <input id="coolerDesde" type="time" value="08:00"/></label>
+<label>Hasta <input id="coolerHasta" type="time" value="20:00"/></label>
+<label>Temp de calefaccion <input id="coolerTempMin" style="width:60px;" type="number" value="20"/>°C</label>
+<label>Temp de encendido <input id="coolerTempMax" style="width:60px;" type="number" value="30"/>°C</label>
+<label> Días: <select id="coolerDias"><option value="ambos">Ambos</option><option value="laborables">Laborables</option><option value="nolaborables">No laborables</option></select></label></div>
+</div>
+<script>
     function toggle(zona) {
       const btn = document.getElementById(zona + "Btn");
       const led = document.getElementById(zona + "Led");
@@ -188,6 +185,17 @@
       const horaActual = ahora.toTimeString().substring(0,5);
       const desde = document.getElementById(zona + "Desde")?.value;
       const hasta = document.getElementById(zona + "Hasta")?.value;
+      
+      const modoDia = document.getElementById(zona + "Dias")?.value || "ambos";
+      const estadoDia = document.getElementById("laborable")?.textContent;
+      if (
+        (modoDia === "laborables" && estadoDia !== "Día laborable") ||
+        (modoDia === "nolaborables" && estadoDia !== "Día no laborable")
+      ) {
+        alert(`Este dispositivo no puede encenderse hoy (${estadoDia}).`);
+        return;
+      }
+    
       if (desde && hasta && (horaActual < desde || horaActual > hasta)) {
         alert(`Dispositivo fuera de la franja horaria permitida (${desde} - ${hasta})`);
         return;
@@ -231,4 +239,3 @@
   </script>
 </body>
 </html>
-
