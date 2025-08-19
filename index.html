@@ -229,7 +229,7 @@
       const dia = now.getDay();
       const hoyISO = now.toISOString().substring(0, 10);
       const diasNoLaborables = JSON.parse(localStorage.getItem('noLaborables')) || [];
-      const esNoLaborable = diasNoLaborables.includes(hoyISO);
+      const esNoLaborable = diasNoLaborables.some(f => f.fecha === hoyISO);
       const laborable = (!esNoLaborable && dia >= 1 && dia <= 5) ? 'Día laborable' : 'Día no laborable';
       document.getElementById('laborable').textContent = laborable;
       const fecha = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
@@ -237,5 +237,39 @@
       document.getElementById('fechaHora').textContent = `${fecha} ${hora}`;
     }, 1000);
   </script>
-</body>
+<script>
+    // Guardar y cargar configuraciones de día por dispositivo
+    const dispositivos = ["ledLiving", "ledComedor", "ledCocina", "ledBanio", "ledHab1", "ledHab2", "cooler"];
+
+    function guardarPreferenciasDias() {
+      const preferencias = {};
+      dispositivos.forEach(zona => {
+        const select = document.getElementById(zona + "Dias");
+        if (select) {
+          preferencias[zona] = select.value;
+        }
+      });
+      localStorage.setItem("preferenciasDias", JSON.stringify(preferencias));
+    }
+
+    function cargarPreferenciasDias() {
+      const preferencias = JSON.parse(localStorage.getItem("preferenciasDias")) || {};
+      dispositivos.forEach(zona => {
+        const select = document.getElementById(zona + "Dias");
+        if (select && preferencias[zona]) {
+          select.value = preferencias[zona];
+        }
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      cargarPreferenciasDias();
+      dispositivos.forEach(zona => {
+        const select = document.getElementById(zona + "Dias");
+        if (select) {
+          select.addEventListener("change", guardarPreferenciasDias);
+        }
+      });
+    });
+</script></body>
 </html>
